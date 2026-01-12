@@ -1,19 +1,11 @@
 # Overseerr MCP Server
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![MCP Badge](https://lobehub.com/badge/mcp/jhomen368-overseerr-mcp)](https://lobehub.com/mcp/jhomen368-overseerr-mcp)
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://github.com/jhomen368/overseerr-mcp/pkgs/container/overseerr-mcp)
-[![Version](https://img.shields.io/badge/version-1.2.3-blue.svg)](https://github.com/jhomen368/overseerr-mcp)
+[![Version](https://img.shields.io/badge/version-1.2.4-blue.svg)](https://github.com/jhomen368/overseerr-mcp)
 [![PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate?hosted_button_id=PBRD7FXKSKAD2)
 
 > **A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server providing AI assistants with direct integration to [Overseerr](https://overseerr.dev/) for automated media discovery, requests, and management in your Plex ecosystem.**
-
-## ✨ What's New in v1.2.3
-- **Enhanced Security Features**
-  - Added automated security workflows (Dependabot, CodeQL, Trivy)
-  - Docker image hardening with non-root user and minimal base image
-  - Input validation for URLs and API keys
-- See [CHANGELOG.md](CHANGELOG.md) for full version history
 
 ## 🎯 Key Features
 

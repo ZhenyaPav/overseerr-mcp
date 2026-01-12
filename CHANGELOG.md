@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.4] - 2026-01-12
+
+### Fixed
+- **Code Quality**: Addressed code scanning alert for useless assignment to local variable
+  - Removed redundant variable assignment to improve code cleanliness
+
+### Security
+- **Dependency Updates**: Comprehensive update of runtime and development dependencies
+  - Updated `@modelcontextprotocol/sdk` to v1.25.2
+  - Updated `express` and `body-parser` for security and stability
+  - Updated `qs` library
+  - Updated GitHub Actions versions (`codeql-action` v4, `setup-qemu-action` v3, `checkout` v6)
+
 ## [1.2.3] - 2025-11-18
 
 ### Added
