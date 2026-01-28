@@ -9,6 +9,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import axios, { AxiosInstance } from 'axios';
 import { CacheManager } from './utils/cache.js';
+import { VERSION } from './version.js';
 import { normalizeTitle, extractSeasonNumber, inferExpectedMediaType, selectBestMatch, encodeSearchQuery } from './utils/normalize.js';
 import { withRetry, batchWithRetry } from './utils/retry.js';
 import {
@@ -172,7 +173,7 @@ class OverseerrServer {
     this.server = new Server(
       {
         name: 'overseerr-mcp',
-        version: '1.2.3',
+        version: VERSION,
       },
       {
         capabilities: {
@@ -2165,7 +2166,7 @@ class OverseerrServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error('Overseerr MCP server v1.2.3 running on stdio');
+    console.error(`Overseerr MCP server v${VERSION} running on stdio`);
   }
 
   async runHttp(port: number = 8085) {
@@ -2175,7 +2176,7 @@ class OverseerrServer {
     const app = express();
 
     app.get('/health', (_req: any, res: any) => {
-      res.json({ status: 'ok', service: 'overseerr-mcp', version: '1.2.3' });
+      res.json({ status: 'ok', service: 'overseerr-mcp', version: VERSION });
     });
 
     app.get('/cache/stats', (_req: any, res: any) => {
@@ -2193,7 +2194,7 @@ class OverseerrServer {
     });
 
     app.listen(port, () => {
-      console.error(`Overseerr MCP server v1.2.3 running on HTTP port ${port}`);
+      console.error(`Overseerr MCP server v${VERSION} running on HTTP port ${port}`);
       console.error(`MCP endpoint: http://localhost:${port}/mcp`);
       console.error(`Health check: http://localhost:${port}/health`);
       console.error(`Cache stats: http://localhost:${port}/cache/stats`);
