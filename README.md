@@ -1,4 +1,4 @@
-# Overseerr MCP Server
+# Seerr MCP Server
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://github.com/jhomen368/overseerr-mcp/pkgs/container/overseerr-mcp)
@@ -218,7 +218,7 @@ manage_media_requests({
 
 Simply ask your AI assistant:
 
-- "Search for Inception in Overseerr"
+- "Search for Inception in Seerr"
 - "Check if these 50 anime titles have been requested"
 - "Request Breaking Bad all seasons"
 - "Show me all pending media requests"
@@ -258,7 +258,7 @@ PORT=8085                            # HTTP server port
 ## 🔧 Troubleshooting
 
 ### Connection Issues
-- Verify Overseerr URL is accessible
+- Verify Seerr/Overseerr URL is accessible
 - Check API key validity (Settings → General)
 - Review firewall rules for remote access
 
