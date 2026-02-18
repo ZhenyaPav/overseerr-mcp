@@ -5,6 +5,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-02-18
+
+### Added
+- **Seerr Support**: Full compatibility with Seerr (Overseerr/Jellyseerr merger)
+  - API is 100% backward compatible
+  - No functional changes required
+- **Dual Environment Variable Support**
+  - New `SEERR_URL` and `SEERR_API_KEY` environment variables (preferred)
+  - Legacy `OVERSEERR_URL` and `OVERSEERR_API_KEY` still supported
+  - `SEERR_*` variables take precedence when both are provided
+  - Deprecation warnings logged for `OVERSEERR_*` variables
+
+### Changed
+- **Branding Update**: Primary branding changed from Overseerr to Seerr
+  - Server name: `overseerr-mcp` → `seerr-mcp` (internal)
+  - Package name remains `@jhomen368/overseerr-mcp` for backward compatibility
+  - Docker image remains `ghcr.io/jhomen368/overseerr-mcp`
+- **Documentation**: Updated README.md to reflect Seerr as primary, Overseerr as legacy
+  - All examples use `SEERR_*` environment variables
+  - Added migration notes for existing users
+- **Logging**: Enhanced server startup messages to indicate Seerr/Overseerr compatibility
+  - Health check endpoint now includes compatibility list
+- **Error Messages**: Updated to use "Seerr" terminology
+
+### Deprecated
+- `OVERSEERR_URL` and `OVERSEERR_API_KEY` environment variables
+  - Will be removed in v3.0.0 (planned for ~1 year from now)
+  - Use `SEERR_URL` and `SEERR_API_KEY` instead
+  - Deprecation warnings are non-intrusive (stderr only)
+
+### Migration Guide
+**For Existing Users:**
+1. **No action required** - All OVERSEERR_* variables continue to work
+2. **Recommended**: Update environment variables from `OVERSEERR_*` to `SEERR_*`
+3. **Claude Desktop users**: Update `claude_desktop_config.json` to use `SEERR_*` variables
+4. **Docker users**: Update environment variables in docker-compose.yml or docker run commands
+
+**Example Migration:**
+```json
+// OLD (still works, but deprecated)
+{
+  "env": {
+    "OVERSEERR_URL": "https://overseerr.example.com",
+    "OVERSEERR_API_KEY": "your-key"
+  }
+}
+
+// NEW (recommended)
+{
+  "env": {
+    "SEERR_URL": "https://overseerr.example.com",  // Works with both Seerr and Overseerr
+    "SEERR_API_KEY": "your-key"
+  }
+}
+```
+
+**Breaking Changes:** None - 100% backward compatible
+
+---
+
 ## [1.2.4] - 2026-01-12
 
 ### Fixed
