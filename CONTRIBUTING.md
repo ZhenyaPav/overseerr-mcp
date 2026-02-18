@@ -1,6 +1,6 @@
-# Contributing to Overseerr MCP Server
+# Contributing to Seerr MCP Server
 
-Thank you for your interest in contributing to Overseerr MCP Server! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to Seerr MCP Server! This document provides guidelines for contributing to the project.
 
 ## Code of Conduct
 
@@ -47,7 +47,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 - Node.js 18.0 or higher
 - npm or yarn
-- Access to an Overseerr instance for testing
+- Access to a Seerr or Overseerr instance for testing
 
 ### Local Development
 
@@ -64,8 +64,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 3. Create a `.env` file with your test credentials:
    ```env
-   OVERSEERR_URL=https://your-test-overseerr.com
-   OVERSEERR_API_KEY=your-api-key
+   SEERR_URL=https://your-test-seerr.com
+   SEERR_API_KEY=your-api-key
    ```
 
 4. Build the project:
@@ -95,7 +95,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 Before submitting a pull request:
 
 1. Build the project successfully
-2. Test with a real Overseerr instance
+2. Test with a real Seerr or Overseerr instance
 3. Verify all existing functionality still works
 4. Test your new features/fixes
 

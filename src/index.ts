@@ -110,58 +110,70 @@ function enrichSeasons(details: MediaDetails): DedupeDetails['seasons'] {
 }
 
 // Validation functions
-function validateOverseerrUrl(url: string): { valid: boolean; error?: string } {
+function validateSeerrUrl(url: string): { valid: boolean; error?: string } {
   if (!url || typeof url !== 'string') {
-    return { valid: false, error: 'OVERSEERR_URL must be a non-empty string' };
+    return { valid: false, error: 'SEERR_URL must be a non-empty string' };
   }
   
   try {
     const parsed = new URL(url);
     if (!['http:', 'https:'].includes(parsed.protocol)) {
-      return { valid: false, error: 'OVERSEERR_URL must use http:// or https:// protocol' };
+      return { valid: false, error: 'SEERR_URL must use http:// or https:// protocol' };
     }
     return { valid: true };
   } catch (error) {
-    return { valid: false, error: 'OVERSEERR_URL must be a valid URL (e.g., https://overseerr.example.com)' };
+    return { valid: false, error: 'SEERR_URL must be a valid URL (e.g., https://seerr.example.com or https://overseerr.example.com)' };
   }
 }
 
 function validateApiKey(key: string): { valid: boolean; error?: string } {
   if (!key || typeof key !== 'string') {
-    return { valid: false, error: 'OVERSEERR_API_KEY must be a non-empty string' };
+    return { valid: false, error: 'SEERR_API_KEY must be a non-empty string' };
   }
   
   // API keys should be at least 20 characters and Base64-compatible
   if (key.length < 20) {
-    return { valid: false, error: 'OVERSEERR_API_KEY appears to be too short (expected at least 20 characters)' };
+    return { valid: false, error: 'SEERR_API_KEY appears to be too short (expected at least 20 characters)' };
   }
   
   if (!/^[a-zA-Z0-9\-_+/=]+$/.test(key)) {
-    return { valid: false, error: 'OVERSEERR_API_KEY contains invalid characters. It should be a Base64-compatible string.' };
+    return { valid: false, error: 'SEERR_API_KEY contains invalid characters. It should be a Base64-compatible string.' };
   }
   
   return { valid: true };
 }
 
-const OVERSEERR_URL = process.env.OVERSEERR_URL;
-const OVERSEERR_API_KEY = process.env.OVERSEERR_API_KEY;
+// Environment variable aliasing: Support both Seerr and Overseerr naming
+// SEERR_* variables take precedence for forward compatibility
+const SEERR_URL = process.env.SEERR_URL || process.env.OVERSEERR_URL;
+const SEERR_API_KEY = process.env.SEERR_API_KEY || process.env.OVERSEERR_API_KEY;
 
-if (!OVERSEERR_URL || !OVERSEERR_API_KEY) {
+// Log deprecation warning for Overseerr variables (non-intrusive)
+if (process.env.OVERSEERR_URL && !process.env.SEERR_URL) {
+  console.error('[DEPRECATION WARNING] OVERSEERR_URL is deprecated. Please use SEERR_URL instead.');
+  console.error('[DEPRECATION WARNING] Support for OVERSEERR_* variables will be removed in v3.0.0');
+}
+if (process.env.OVERSEERR_API_KEY && !process.env.SEERR_API_KEY) {
+  console.error('[DEPRECATION WARNING] OVERSEERR_API_KEY is deprecated. Please use SEERR_API_KEY instead.');
+  console.error('[DEPRECATION WARNING] Support for OVERSEERR_* variables will be removed in v3.0.0');
+}
+
+if (!SEERR_URL || !SEERR_API_KEY) {
   throw new Error(
-    'OVERSEERR_URL and OVERSEERR_API_KEY environment variables are required'
+    'SEERR_URL (or OVERSEERR_URL) and SEERR_API_KEY (or OVERSEERR_API_KEY) environment variables are required'
   );
 }
 
 // Validate URL format
-const urlValidation = validateOverseerrUrl(OVERSEERR_URL);
+const urlValidation = validateSeerrUrl(SEERR_URL);
 if (!urlValidation.valid) {
-  throw new Error(`Invalid OVERSEERR_URL: ${urlValidation.error}`);
+  throw new Error(`Invalid SEERR_URL: ${urlValidation.error}`);
 }
 
 // Validate API key format
-const keyValidation = validateApiKey(OVERSEERR_API_KEY);
+const keyValidation = validateApiKey(SEERR_API_KEY);
 if (!keyValidation.valid) {
-  throw new Error(`Invalid OVERSEERR_API_KEY: ${keyValidation.error}`);
+  throw new Error(`Invalid SEERR_API_KEY: ${keyValidation.error}`);
 }
 
 class OverseerrServer {
@@ -172,7 +184,7 @@ class OverseerrServer {
   constructor() {
     this.server = new Server(
       {
-        name: 'overseerr-mcp',
+        name: 'seerr-mcp',
         version: VERSION,
       },
       {
@@ -183,9 +195,9 @@ class OverseerrServer {
     );
 
     this.axiosInstance = axios.create({
-      baseURL: `${OVERSEERR_URL}/api/v1`,
+      baseURL: `${SEERR_URL}/api/v1`,
       headers: {
-        'X-Api-Key': OVERSEERR_API_KEY,
+        'X-Api-Key': SEERR_API_KEY,
         'Content-Type': 'application/json',
       },
     });
@@ -651,7 +663,7 @@ class OverseerrServer {
             content: [
               {
                 type: 'text',
-                text: `Overseerr API error (${status}): ${message}`,
+                text: `Seerr API error (${status}): ${message}`,
               },
             ],
             isError: true,
@@ -2166,7 +2178,8 @@ class OverseerrServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error(`Overseerr MCP server v${VERSION} running on stdio`);
+    console.error(`Seerr MCP server v${VERSION} running on stdio`);
+    console.error(`Supports both Seerr and Overseerr (legacy) instances`);
   }
 
   async runHttp(port: number = 8085) {
@@ -2176,7 +2189,12 @@ class OverseerrServer {
     const app = express();
 
     app.get('/health', (_req: any, res: any) => {
-      res.json({ status: 'ok', service: 'overseerr-mcp', version: VERSION });
+      res.json({
+        status: 'ok',
+        service: 'seerr-mcp',
+        compatibility: ['seerr', 'overseerr', 'jellyseerr'],
+        version: VERSION
+      });
     });
 
     app.get('/cache/stats', (_req: any, res: any) => {
@@ -2194,7 +2212,8 @@ class OverseerrServer {
     });
 
     app.listen(port, () => {
-      console.error(`Overseerr MCP server v${VERSION} running on HTTP port ${port}`);
+      console.error(`Seerr MCP server v${VERSION} running on HTTP port ${port}`);
+      console.error(`Supports Seerr and Overseerr (legacy) instances`);
       console.error(`MCP endpoint: http://localhost:${port}/mcp`);
       console.error(`Health check: http://localhost:${port}/health`);
       console.error(`Cache stats: http://localhost:${port}/cache/stats`);

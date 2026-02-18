@@ -2,10 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://github.com/jhomen368/overseerr-mcp/pkgs/container/overseerr-mcp)
-[![Version](https://img.shields.io/badge/version-1.2.4-blue.svg)](https://github.com/jhomen368/overseerr-mcp)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/jhomen368/overseerr-mcp)
 [![PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate?hosted_button_id=PBRD7FXKSKAD2)
 
-> **A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server providing AI assistants with direct integration to [Overseerr](https://overseerr.dev/) for automated media discovery, requests, and management in your Plex ecosystem.**
+> **A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for Overseerr and Seerr (the unified successor) that enables AI assistants to search, request, and manage media through the Model Context Protocol.**
 
 ## 🎯 Key Features
 
@@ -44,8 +44,8 @@
 ## 📋 Prerequisites
 
 - **Node.js** 18.0 or higher
-- **Overseerr instance** (self-hosted or managed)
-- **Overseerr API key** (Settings → General in Overseerr)
+- **Seerr or Overseerr instance** (self-hosted or managed)
+- **Seerr/Overseerr API key** (Settings → General in your instance)
 
 ## 🚀 Quick Start
 
@@ -64,26 +64,37 @@ Add to your configuration file:
 ```json
 {
   "mcpServers": {
-    "overseerr": {
+    "seerr": {
       "command": "npx",
       "args": ["-y", "@jhomen368/overseerr-mcp"],
       "env": {
-        "OVERSEERR_URL": "https://overseerr.example.com",
-        "OVERSEERR_API_KEY": "your-api-key-here"
+        "SEERR_URL": "https://seerr.example.com",
+        "SEERR_API_KEY": "your-api-key-here"
       }
     }
   }
 }
 ```
 
+> **Legacy Overseerr Users:** If you're still using Overseerr (not Seerr), you can continue using the legacy variables:
+> ```json
+> {
+>   "env": {
+>     "OVERSEERR_URL": "https://overseerr.example.com",
+>     "OVERSEERR_API_KEY": "your-api-key-here"
+>   }
+> }
+> ```
+> *Both `OVERSEERR_*` and `SEERR_*` variables are supported for backward compatibility. Legacy variables will be removed in v3.0.0.*
+
 ### Option 2: Docker (Remote Access)
 
 ```bash
 docker run -d \
-  --name overseerr-mcp \
+  --name seerr-mcp \
   -p 8085:8085 \
-  -e OVERSEERR_URL=https://your-overseerr-instance.com \
-  -e OVERSEERR_API_KEY=your-api-key-here \
+  -e SEERR_URL=https://your-seerr-instance.com \
+  -e SEERR_API_KEY=your-api-key-here \
   ghcr.io/jhomen368/overseerr-mcp:latest
 ```
 
@@ -91,14 +102,14 @@ docker run -d \
 
 ```yaml
 services:
-  overseerr-mcp:
+  seerr-mcp:
     image: ghcr.io/jhomen368/overseerr-mcp:latest
-    container_name: overseerr-mcp
+    container_name: seerr-mcp
     ports:
       - "8085:8085"
     environment:
-      - OVERSEERR_URL=https://your-overseerr-instance.com
-      - OVERSEERR_API_KEY=your-api-key-here
+      - SEERR_URL=https://your-seerr-instance.com
+      - SEERR_API_KEY=your-api-key-here
     restart: unless-stopped
 ```
 
@@ -219,8 +230,12 @@ Simply ask your AI assistant:
 ### Environment Variables
 
 **Required:**
-- `OVERSEERR_URL` - Your Overseerr instance URL
-- `OVERSEERR_API_KEY` - API key from Overseerr Settings → General
+- `SEERR_URL` - Your Seerr/Overseerr instance URL
+- `SEERR_API_KEY` - API key from Settings → General
+
+**Legacy (deprecated, will be removed in v3.0.0):**
+- `OVERSEERR_URL` - Use `SEERR_URL` instead
+- `OVERSEERR_API_KEY` - Use `SEERR_API_KEY` instead
 
 **Optional (with defaults):**
 ```bash
@@ -250,13 +265,13 @@ PORT=8085                            # HTTP server port
 ### Docker Issues
 ```bash
 # Check logs
-docker logs overseerr-mcp
+docker logs seerr-mcp
 
 # Verify health
 curl http://localhost:8085/health
 
 # Restart container
-docker restart overseerr-mcp
+docker restart seerr-mcp
 ```
 
 ### Build Issues
@@ -280,7 +295,8 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## 🙏 Acknowledgments
 
-- [Overseerr](https://overseerr.dev/) - Media request and discovery tool
+- [Seerr](https://github.com/seerr) - Next-generation media request and discovery tool
+- [Overseerr](https://overseerr.dev/) - Original media request tool for Plex
 - [Model Context Protocol](https://modelcontextprotocol.io) - Open protocol for AI integrations
 - [Anthropic](https://www.anthropic.com/) - Creators of the MCP standard
 

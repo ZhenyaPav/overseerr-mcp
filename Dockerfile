@@ -51,8 +51,9 @@ EXPOSE 8085
 
 # Environment variables
 # These MUST be provided at runtime:
-# - OVERSEERR_URL: Your Overseerr instance URL (e.g., https://overseerr.example.com)
-# - OVERSEERR_API_KEY: Your Overseerr API key
+# - SEERR_URL or OVERSEERR_URL (legacy): Your Seerr/Overseerr instance URL
+# - SEERR_API_KEY or OVERSEERR_API_KEY (legacy): Your API key
+# Note: SEERR_* variables are preferred; OVERSEERR_* will show deprecation warnings
 ENV HTTP_MODE=true \
     PORT=8085 \
     NODE_ENV=production
