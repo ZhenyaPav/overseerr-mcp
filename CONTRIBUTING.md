@@ -53,8 +53,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/jhomen368/overseerr-mcp-server.git
-   cd overseerr-mcp-server
+   git clone https://github.com/jhomen368/overseerr-mcp.git
+   cd overseerr-mcp
    ```
 
 2. Install dependencies:
