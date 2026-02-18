@@ -149,13 +149,17 @@ const SEERR_URL = process.env.SEERR_URL || process.env.OVERSEERR_URL;
 const SEERR_API_KEY = process.env.SEERR_API_KEY || process.env.OVERSEERR_API_KEY;
 
 // Log deprecation warning for Overseerr variables (non-intrusive)
-if (process.env.OVERSEERR_URL && !process.env.SEERR_URL) {
-  console.error('[DEPRECATION WARNING] OVERSEERR_URL is deprecated. Please use SEERR_URL instead.');
-  console.error('[DEPRECATION WARNING] Support for OVERSEERR_* variables will be removed in v3.0.0');
-}
-if (process.env.OVERSEERR_API_KEY && !process.env.SEERR_API_KEY) {
-  console.error('[DEPRECATION WARNING] OVERSEERR_API_KEY is deprecated. Please use SEERR_API_KEY instead.');
-  console.error('[DEPRECATION WARNING] Support for OVERSEERR_* variables will be removed in v3.0.0');
+const isUsingLegacyUrl = process.env.OVERSEERR_URL && !process.env.SEERR_URL;
+const isUsingLegacyApiKey = process.env.OVERSEERR_API_KEY && !process.env.SEERR_API_KEY;
+
+if (isUsingLegacyUrl || isUsingLegacyApiKey) {
+  console.error('[DEPRECATION WARNING] Legacy OVERSEERR_* variables are in use. Support will be removed in v3.0.0.');
+  if (isUsingLegacyUrl) {
+    console.error('  - Please migrate from OVERSEERR_URL to the preferred SEERR_URL.');
+  }
+  if (isUsingLegacyApiKey) {
+    console.error('  - Please migrate from OVERSEERR_API_KEY to the preferred SEERR_API_KEY.');
+  }
 }
 
 if (!SEERR_URL || !SEERR_API_KEY) {
