@@ -24,6 +24,10 @@ import {
   CompactMediaResult,
   MediaInfo,
   DedupeDetails,
+  GetServicesArgs,
+  GetServiceDetailsArgs,
+  ServiceConfig as ServiceConfig,
+  ServiceDetailsResponse,
 } from './types.js';
 
 // Field mapping for includeDetails feature
@@ -639,6 +643,42 @@ class OverseerrServer {
             },
           },
         },
+        {
+          name: 'get_services',
+          description:
+            'List configured Radarr/Sonarr servers. Returns ID, name, isDefault, 4K status, active defaults (directory, profile, tags).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              serviceType: {
+                type: 'string',
+                enum: ['radarr', 'sonarr'],
+                description: 'Which service type to list. Omit for both.',
+              },
+            },
+          },
+        },
+        {
+          name: 'get_service_details',
+          description:
+            'Get quality profiles, root folders, tags, and language profiles (Sonarr) for a Radarr/Sonarr server.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              serviceType: {
+                type: 'string',
+                enum: ['radarr', 'sonarr'],
+                description: 'Service type',
+              },
+              serverId: {
+                type: 'number',
+                description: 'Server ID from get_services (default: 0)',
+                default: 0,
+              },
+            },
+            required: ['serviceType'],
+          },
+        },
       ],
     }));
 
@@ -653,6 +693,10 @@ class OverseerrServer {
             return await this.handleManageRequests(request.params.arguments);
           case 'get_media_details':
             return await this.handleGetDetails(request.params.arguments);
+          case 'get_services':
+            return await this.handleGetServices(request.params.arguments);
+          case 'get_service_details':
+            return await this.handleGetServiceDetails(request.params.arguments);
           default:
             throw new McpError(
               ErrorCode.MethodNotFound,
@@ -2079,6 +2123,85 @@ class OverseerrServer {
           }, null, 2),
         }
       ]
+    };
+  }
+
+  private async handleGetServices(args: GetServicesArgs) {
+    let requestedServiceTypes: Array<'radarr' | 'sonarr'> = ['radarr', 'sonarr'];
+    if (args.serviceType) {
+      requestedServiceTypes = [args.serviceType];
+    }
+
+    const retrievedServices: Array<ServiceConfig & { serviceType: string }> = [];
+
+    for (const serviceType of requestedServiceTypes) {
+      const cacheKey = { serviceType };
+      let retrievedService = this.cache.get<ServiceConfig[]>('services', cacheKey);
+
+      if (!retrievedService) {
+        const response = await this.axiosInstance.get<ServiceConfig[]>(
+          `/service/${serviceType}`
+        );
+        retrievedService = response.data;
+        this.cache.set('services', cacheKey, retrievedService);
+      }
+
+      for (const service of retrievedService) {
+        retrievedServices.push({ serviceType, ...service });
+      }
+    }
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(retrievedServices, null, 2),
+        },
+      ],
+    };
+  }
+
+  private async handleGetServiceDetails(args: GetServiceDetailsArgs) {
+    if (!args.serviceType) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        'serviceType is required (radarr or sonarr)'
+      );
+    }
+
+    const serviceType = args.serviceType;
+    const serverId = args.serverId ?? 0;
+
+    const cacheKey = { serviceType, serverId };
+    let profileData = this.cache.get<ServiceDetailsResponse>('serviceDetails', cacheKey);
+
+    if (!profileData) {
+      const response = await this.axiosInstance.get<ServiceDetailsResponse>(
+        `/service/${serviceType}/${serverId}`
+      );
+      profileData = response.data;
+      this.cache.set('serviceDetails', cacheKey, profileData);
+    }
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({
+            server: {
+              id: profileData.server.id,
+              name: profileData.server.name,
+              isDefault: profileData.server.isDefault,
+              activeProfileId: profileData.server.activeProfileId,
+              activeDirectory: profileData.server.activeDirectory,
+            },
+            profiles: profileData.profiles,
+            rootFolders: profileData.rootFolders,
+            tags: profileData.tags,
+            ...(profileData.languageProfiles ? { languageProfiles: profileData.languageProfiles } : {}),
+          }, null, 2),
+        },
+      ],
     };
   }
 
