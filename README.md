@@ -40,6 +40,8 @@
 | **request_media** | Request movies/TV | Batch requests, season validation, multi-season confirmation, dry-run mode |
 | **manage_media_requests** | Manage requests | List/approve/decline/delete, filtering, summary statistics |
 | **get_media_details** | Get media info | Batch lookup, flexible detail levels (basic/standard/full) |
+| **get_services** | List Radarr/Sonarr servers | Discover server IDs, active defaults, 4K status |
+| **get_service_details** | Get server config | Quality profiles, root folders, tags per server |
 
 ## 📋 Prerequisites
 
@@ -214,6 +216,31 @@ manage_media_requests({
 })
 ```
 
+### Service Discovery
+
+```typescript
+// List all configured servers (Radarr + Sonarr)
+get_services({})
+
+// List only Radarr servers
+get_services({ serviceType: "radarr" })
+
+// Get quality profiles, root folders, and tags for a server
+get_service_details({
+  serviceType: "radarr",
+  serverId: 0
+})
+
+// Use discovered values when requesting media
+request_media({
+  mediaType: "movie",
+  mediaId: 438631,
+  serverId: 0,
+  profileId: 13,
+  rootFolder: "/data/media/movies"
+})
+```
+
 ### Natural Language Examples
 
 Simply ask your AI assistant:
@@ -224,6 +251,8 @@ Simply ask your AI assistant:
 - "Show me all pending media requests"
 - "Approve request ID 123"
 - "Get details for TMDB ID 550"
+- "What Radarr servers are configured?"
+- "Show me the quality profiles for my Sonarr server"
 
 ## ⚙️ Configuration
 
