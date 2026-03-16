@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-03-16
+
+### Added
+- **`get_services` Tool**: List configured Radarr/Sonarr servers from the Seerr/Overseerr instance
+  - Returns server details: `id`, `name`, `isDefault`, `is4k`, active directory, profile ID, and tags
+  - Supports optional `serviceType` filter (`radarr` or `sonarr`); omit for both
+  - Anime-specific overrides included when configured (`activeAnimeDirectory`, `activeAnimeProfileId`, `activeAnimeTags`)
+  - Results cached for 10 minutes (`CACHE_SERVICES_TTL` env var, default: 10 min)
+
+- **`get_service_details` Tool**: Get quality profiles, root folders, tags, and language profiles for a specific server
+  - Required `serviceType` parameter (`radarr` or `sonarr`)
+  - Optional `serverId` parameter (default: `0`; use `get_services` to retrieve IDs)
+  - Sonarr responses include `languageProfiles` array
+  - Results cached for 10 minutes (`CACHE_SERVICEDETAILS_TTL` env var, default: 10 min)
+
+- **Service Discovery Type Definitions** (`src/types.ts`)
+  - New types: `ServiceConfig`, `QualityProfile`, `RootFolder`, `Tag`, `LanguageProfile`, `ServiceDetailsResponse`
+  - New input types: `GetServicesArgs` and `GetServiceDetailsArgs`
+
+- **New Cache Types**: `services` and `serviceDetails` added to caching layer
+  - TTL: 10 minutes each (configurable via `CACHE_SERVICES_TTL` and `CACHE_SERVICEDETAILS_TTL`)
+  - Both types tracked in hit/miss stats and visible at `/cache/stats` endpoint
+
+- **MCP Metadata Updated**: `package.json` `mcp.server.tools` declaration now lists all 6 tools
+  - Improves discoverability on LobeHub and compatible MCP clients
+
+### Changed
+- **Express updated to v5**: Runtime dependency `express` bumped from `^4.18.2` to `^5.1.0`
+  - `@types/express` dev dependency updated to `^5.0.5`
+- **Node types updated**: `@types/node` dev dependency updated to `^25.0.3`
+- **Tool count**: Server now exposes 6 tools (up from 4)
+
+---
+
 ## [2.0.0] - 2026-02-18
 
 ### Added
