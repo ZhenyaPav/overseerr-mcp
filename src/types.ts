@@ -153,6 +153,60 @@ export interface GetDetailsArgs {
   language?: string;
 }
 
+// Service discovery types
+export interface GetServicesArgs {
+  serviceType?: 'radarr' | 'sonarr';
+}
+
+export interface GetServiceDetailsArgs {
+  serviceType: 'radarr' | 'sonarr';
+  serverId?: number;
+}
+
+export interface ServiceConfig {
+  id: number;
+  name: string;
+  is4k: boolean;
+  isDefault: boolean;
+  activeDirectory: string;
+  activeProfileId: number;
+  activeTags: number[];
+  activeAnimeDirectory?: string;
+  activeAnimeProfileId?: number;
+  activeAnimeTags?: number[];
+  activeLanguageProfileId?: number;
+  activeAnimeLanguageProfileId?: number;
+}
+
+export interface QualityProfile {
+  id: number;
+  name: string;
+}
+
+export interface RootFolder {
+  id: number;
+  path: string;
+  freeSpace?: number;
+}
+
+export interface Tag {
+  id: number;
+  label: string;
+}
+
+export interface LanguageProfile {
+  id: number;
+  name: string;
+}
+
+export interface ServiceDetailsResponse {
+  server: ServiceConfig;
+  profiles: QualityProfile[];
+  rootFolders: RootFolder[];
+  tags: Tag[];
+  languageProfiles?: LanguageProfile[];
+}
+
 // Tool output types
 export interface DedupeResult {
   title: string;

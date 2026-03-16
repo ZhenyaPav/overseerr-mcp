@@ -12,6 +12,8 @@ interface CacheConfig {
     search: number;
     mediaDetails: number;
     requests: number;
+    services: number;
+    serviceDetails: number;
   };
   maxSize: number;
 }
@@ -24,8 +26,8 @@ export class CacheManager {
 
   constructor() {
     this.cache = new Map();
-    this.hits = new Map(['search', 'mediaDetails', 'requests'].map(k => [k, 0]));
-    this.misses = new Map(['search', 'mediaDetails', 'requests'].map(k => [k, 0]));
+    this.hits = new Map(['search', 'mediaDetails', 'requests', 'services', 'serviceDetails'].map(k => [k, 0]));
+    this.misses = new Map(['search', 'mediaDetails', 'requests', 'services', 'serviceDetails'].map(k => [k, 0]));
     
     this.config = {
       enabled: process.env.CACHE_ENABLED !== 'false',
@@ -33,6 +35,8 @@ export class CacheManager {
         search: parseInt(process.env.CACHE_SEARCH_TTL || '300000'), // 5 min
         mediaDetails: parseInt(process.env.CACHE_MEDIA_TTL || '1800000'), // 30 min
         requests: parseInt(process.env.CACHE_REQUESTS_TTL || '60000'), // 1 min
+        services: parseInt(process.env.CACHE_SERVICES_TTL || '600000'), // 10 min
+        serviceDetails: parseInt(process.env.CACHE_SERVICEDETAILS_TTL || '600000'), // 10 min
       },
       maxSize: parseInt(process.env.CACHE_MAX_SIZE || '1000'),
     };
@@ -123,7 +127,7 @@ export class CacheManager {
       types: {} as Record<string, any>,
     };
 
-    for (const type of ['search', 'mediaDetails', 'requests']) {
+    for (const type of ['search', 'mediaDetails', 'requests', 'services', 'serviceDetails']) {
       const hits = this.hits.get(type) || 0;
       const misses = this.misses.get(type) || 0;
       const total = hits + misses;

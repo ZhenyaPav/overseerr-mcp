@@ -40,6 +40,14 @@
         {
           "name": "get_media_details",
           "description": "Get detailed information about movies or TV shows with flexible detail levels"
+        },
+        {
+          "name": "get_services",
+          "description": "List configured Radarr/Sonarr servers with active defaults"
+        },
+        {
+          "name": "get_service_details",
+          "description": "Get quality profiles, root folders, and tags for a specific Radarr/Sonarr server"
         }
       ]
     }

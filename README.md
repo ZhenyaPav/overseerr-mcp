@@ -14,7 +14,7 @@
 - **🎯 Batch Dedupe Mode** - Check 50-100 titles in one operation
 - **🔄 Smart Caching** - 70-85% API call reduction
 - **🛡️ Safety Features** - Multi-season confirmation, validation
-- **📦 4 Powerful Tools** - Consolidated from 8 for clarity
+- **📦 6 Tools** - Search, request, and manage media | Discover Radarr/Sonarr server configurations
 
 ## 🔒 Security
 
@@ -40,6 +40,8 @@
 | **request_media** | Request movies/TV | Batch requests, season validation, multi-season confirmation, dry-run mode |
 | **manage_media_requests** | Manage requests | List/approve/decline/delete, filtering, summary statistics |
 | **get_media_details** | Get media info | Batch lookup, flexible detail levels (basic/standard/full) |
+| **get_services** | List Radarr/Sonarr servers | Discover server IDs, active defaults, 4K status |
+| **get_service_details** | Get server config | Quality profiles, root folders, tags per server |
 
 ## 📋 Prerequisites
 
@@ -214,6 +216,31 @@ manage_media_requests({
 })
 ```
 
+### Service Discovery
+
+```typescript
+// List all configured servers (Radarr + Sonarr)
+get_services({})
+
+// List only Radarr servers
+get_services({ serviceType: "radarr" })
+
+// Get quality profiles, root folders, and tags for a server
+get_service_details({
+  serviceType: "radarr",
+  serverId: 0
+})
+
+// Use discovered values when requesting media
+request_media({
+  mediaType: "movie",
+  mediaId: 438631,
+  serverId: 0,
+  profileId: 13,
+  rootFolder: "/data/media/movies"
+})
+```
+
 ### Natural Language Examples
 
 Simply ask your AI assistant:
@@ -224,6 +251,8 @@ Simply ask your AI assistant:
 - "Show me all pending media requests"
 - "Approve request ID 123"
 - "Get details for TMDB ID 550"
+- "What Radarr servers are configured?"
+- "Show me the quality profiles for my Sonarr server"
 
 ## ⚙️ Configuration
 
@@ -244,6 +273,8 @@ CACHE_SEARCH_TTL=300000             # Search cache: 5 min
 CACHE_MEDIA_TTL=1800000             # Media cache: 30 min
 CACHE_REQUESTS_TTL=60000            # Request cache: 1 min
 CACHE_MAX_SIZE=1000                 # Max cache entries
+CACHE_SERVICES_TTL=600000           # Services cache: 10 min
+CACHE_SERVICEDETAILS_TTL=600000     # Service details cache: 10 min
 REQUIRE_MULTI_SEASON_CONFIRM=true   # Confirm >24 episodes
 HTTP_MODE=false                      # Enable HTTP transport
 PORT=8085                            # HTTP server port
