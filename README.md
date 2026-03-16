@@ -14,7 +14,7 @@
 - **🎯 Batch Dedupe Mode** - Check 50-100 titles in one operation
 - **🔄 Smart Caching** - 70-85% API call reduction
 - **🛡️ Safety Features** - Multi-season confirmation, validation
-- **📦 4 Powerful Tools** - Consolidated from 8 for clarity
+- **📦 6 Tools** - Search, request, and manage media | Discover Radarr/Sonarr server configurations
 
 ## 🔒 Security
 
@@ -273,6 +273,8 @@ CACHE_SEARCH_TTL=300000             # Search cache: 5 min
 CACHE_MEDIA_TTL=1800000             # Media cache: 30 min
 CACHE_REQUESTS_TTL=60000            # Request cache: 1 min
 CACHE_MAX_SIZE=1000                 # Max cache entries
+CACHE_SERVICES_TTL=600000           # Services cache: 10 min
+CACHE_SERVICEDETAILS_TTL=600000     # Service details cache: 10 min
 REQUIRE_MULTI_SEASON_CONFIRM=true   # Confirm >24 episodes
 HTTP_MODE=false                      # Enable HTTP transport
 PORT=8085                            # HTTP server port

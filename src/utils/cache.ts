@@ -36,7 +36,7 @@ export class CacheManager {
         mediaDetails: parseInt(process.env.CACHE_MEDIA_TTL || '1800000'), // 30 min
         requests: parseInt(process.env.CACHE_REQUESTS_TTL || '60000'), // 1 min
         services: parseInt(process.env.CACHE_SERVICES_TTL || '600000'), // 10 min
-        serviceDetails: parseInt(process.env.CACHE_SERVICE_PROFILES_TTL || '600000'), // 10 min
+        serviceDetails: parseInt(process.env.CACHE_SERVICEDETAILS_TTL || '600000'), // 10 min
       },
       maxSize: parseInt(process.env.CACHE_MAX_SIZE || '1000'),
     };
