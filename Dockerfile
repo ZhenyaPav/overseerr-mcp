@@ -8,8 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
-RUN npm ci
+# Upgrade all packages to fix known vulnerabilities, then install dependencies
+RUN apk upgrade --no-cache && \
+    npm ci
 
 # Copy source code
 COPY src ./src
@@ -23,8 +24,9 @@ FROM node:25-alpine
 # Set working directory
 WORKDIR /app
 
-# Install dumb-init for proper signal handling and security
-RUN apk add --no-cache dumb-init
+# Upgrade all packages to fix known vulnerabilities, then install dumb-init for proper signal handling
+RUN apk upgrade --no-cache && \
+    apk add --no-cache dumb-init
 
 # Copy package files
 COPY package*.json ./
