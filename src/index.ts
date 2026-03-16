@@ -26,7 +26,7 @@ import {
   DedupeDetails,
   GetServicesArgs,
   GetServiceDetailsArgs,
-  ServiceConfig as ServiceConfig,
+  ServiceConfig,
   ServiceDetailsResponse,
 } from './types.js';
 
@@ -2132,30 +2132,28 @@ class OverseerrServer {
       requestedServiceTypes = [args.serviceType];
     }
 
-    const retrievedServices: Array<ServiceConfig & { serviceType: string }> = [];
+    const servicesResult = await Promise.all(
+      requestedServiceTypes.map(async (serviceType) => {
+        const cacheKey = { serviceType };
+        let services = this.cache.get<ServiceConfig[]>('services', cacheKey);
 
-    for (const serviceType of requestedServiceTypes) {
-      const cacheKey = { serviceType };
-      let retrievedService = this.cache.get<ServiceConfig[]>('services', cacheKey);
+        if (!services) {
+          const response = await this.axiosInstance.get<ServiceConfig[]>(
+            `/service/${serviceType}`
+          );
+          services = response.data;
+          this.cache.set('services', cacheKey, services);
+        }
 
-      if (!retrievedService) {
-        const response = await this.axiosInstance.get<ServiceConfig[]>(
-          `/service/${serviceType}`
-        );
-        retrievedService = response.data;
-        this.cache.set('services', cacheKey, retrievedService);
-      }
-
-      for (const service of retrievedService) {
-        retrievedServices.push({ serviceType, ...service });
-      }
-    }
+        return services.map(service => ({ serviceType, ...service }));
+      })
+    );
 
     return {
       content: [
         {
           type: 'text',
-          text: JSON.stringify(retrievedServices, null, 2),
+          text: JSON.stringify(servicesResult.flat(), null, 2),
         },
       ],
     };
@@ -2188,13 +2186,7 @@ class OverseerrServer {
         {
           type: 'text',
           text: JSON.stringify({
-            server: {
-              id: profileData.server.id,
-              name: profileData.server.name,
-              isDefault: profileData.server.isDefault,
-              activeProfileId: profileData.server.activeProfileId,
-              activeDirectory: profileData.server.activeDirectory,
-            },
+            server: profileData.server,
             profiles: profileData.profiles,
             rootFolders: profileData.rootFolders,
             tags: profileData.tags,
