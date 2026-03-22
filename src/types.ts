@@ -95,6 +95,7 @@ export interface SearchMediaArgs {
     serverId?: number;
     profileId?: number;
     rootFolder?: string;
+    languageProfileId?: number;
     dryRun?: boolean;
   };
   checkAvailability?: boolean;
@@ -123,6 +124,7 @@ export interface RequestMediaArgs {
   serverId?: number;
   profileId?: number;
   rootFolder?: string;
+  languageProfileId?: number;
   validateFirst?: boolean;
   dryRun?: boolean;
   confirmed?: boolean;

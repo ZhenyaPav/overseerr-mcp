@@ -418,6 +418,7 @@ class OverseerrServer {
                   serverId: { type: 'number' },
                   profileId: { type: 'number' },
                   rootFolder: { type: 'string' },
+                  languageProfileId: { type: 'number' },
                   dryRun: {
                     type: 'boolean',
                     description: 'Preview only',
@@ -525,6 +526,7 @@ class OverseerrServer {
               serverId: { type: 'number' },
               profileId: { type: 'number' },
               rootFolder: { type: 'string' },
+              languageProfileId: { type: 'number' },
               validateFirst: {
                 type: 'boolean',
                 description: 'Check existing',
@@ -1452,9 +1454,10 @@ class OverseerrServer {
               if (item.mediaType === 'tv' && seasonsToRequest) {
                 requestBody.seasons = seasonsToRequest;
               }
-              if (args.requestOptions?.serverId) requestBody.serverId = args.requestOptions.serverId;
-              if (args.requestOptions?.profileId) requestBody.profileId = args.requestOptions.profileId;
-              if (args.requestOptions?.rootFolder) requestBody.rootFolder = args.requestOptions.rootFolder;
+              if (args.requestOptions?.serverId !== undefined) requestBody.serverId = args.requestOptions.serverId;
+              if (args.requestOptions?.profileId !== undefined) requestBody.profileId = args.requestOptions.profileId;
+              if (args.requestOptions?.rootFolder !== undefined) requestBody.rootFolder = args.requestOptions.rootFolder;
+              if (args.requestOptions?.languageProfileId !== undefined) requestBody.languageProfileId = args.requestOptions.languageProfileId;
 
               const response = await this.axiosInstance.post('/request', requestBody);
               
@@ -1718,9 +1721,10 @@ class OverseerrServer {
       requestBody.seasons = expandedSeasons;
     }
 
-    if (args.serverId) requestBody.serverId = args.serverId;
-    if (args.profileId) requestBody.profileId = args.profileId;
-    if (args.rootFolder) requestBody.rootFolder = args.rootFolder;
+    if (args.serverId !== undefined) requestBody.serverId = args.serverId;
+    if (args.profileId !== undefined) requestBody.profileId = args.profileId;
+    if (args.rootFolder !== undefined) requestBody.rootFolder = args.rootFolder;
+    if (args.languageProfileId !== undefined) requestBody.languageProfileId = args.languageProfileId;
 
     const response = await withRetry(async () => {
       return await this.axiosInstance.post('/request', requestBody);
@@ -1738,7 +1742,7 @@ class OverseerrServer {
             success: true,
             requestId: response.data.id,
             status: this.getStatusString(response.data.status),
-            message: `Successfully requested ${response.data.media.title || response.data.media.name}`,
+            message: `Successfully requested ${response.data.media?.title || response.data.media?.name || `${mediaType} ${mediaId}`}`,
             seasonsRequested: response.data.seasons?.map((s: any) => s.seasonNumber),
           }, null, 2),
         },
